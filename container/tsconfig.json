@@ -2,12 +2,22 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
-    "strict": true,
+    "moduleResolution": "Node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "baseUrl": "./src",
+    "paths": {
+      "todoMFE/*": ["./remoteTypes.d.ts"],
+      "foodMFE/*": ["./remoteTypes.d.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["src/**/*", "remoteTypes.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }

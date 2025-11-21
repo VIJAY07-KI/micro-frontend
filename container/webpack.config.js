@@ -17,16 +17,16 @@ export default {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
     publicPath: "auto",
-    clean: true
+    clean: true,
   },
 
   devServer: {
     port: 3000,
-    historyApiFallback: true
+    historyApiFallback: true,
   },
 
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: [".tsx", ".ts", ".js"],
   },
 
   module: {
@@ -34,22 +34,37 @@ export default {
       {
         test: /\.(ts|tsx)$/i,
         exclude: /node_modules/,
-        use: "ts-loader"
-      }
-    ]
+        use: "ts-loader",
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"], // optional if you use CSS
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+    ],
   },
 
   plugins: [
     new ModuleFederationPlugin({
       name: "container",
+      filename: "remoteEntry.js",
+
       remotes: {
         foodMFE: "foodMFE@http://localhost:3001/remoteEntry.js",
-        todoMFE: "todoMFE@http://localhost:3002/remoteEntry.js"
-      }
+        todoMFE: "todoMFE@http://localhost:3002/remoteEntry.js",
+      },
+
+      shared: {
+        react: { singleton: true, requiredVersion: false },
+        "react-dom": { singleton: true, requiredVersion: false },
+      },
     }),
 
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

@@ -24,15 +24,8 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
-      }
+      { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ },
+      { test: /\.css$/i, use: ["style-loader", "css-loader"] }
     ]
   },
 
@@ -43,13 +36,11 @@ module.exports = {
       exposes: {
         "./TodoApp": "./src/TodoApp.tsx"
       },
-      // Do NOT share React 16 with container React 18
       shared: {
-        react: { singleton: false },
-        "react-dom": { singleton: false }
+        react: { singleton: true, requiredVersion: "^18.2.0" },
+        "react-dom": { singleton: true, requiredVersion: "^18.2.0" }
       }
     }),
-
     new HtmlWebpackPlugin({
       template: "./public/index.html"
     })

@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from "react";
+import ErrorBoundary from "./ErrorBoundary";
 
-// const FoodApp = lazy(() => import("foodMFE/FoodApp"));
 const TodoApp = lazy(() => import("todoMFE/TodoApp"));
+const FoodApp = lazy(() => import("foodMFE/FoodApp"));
 
 export default function App() {
   return (
@@ -10,12 +11,16 @@ export default function App() {
 
       <h2>🍕 Food Cards</h2>
       <Suspense fallback={<p>Loading Food App...</p>}>
-        {/* <FoodApp /> */}
+        <ErrorBoundary>
+          <FoodApp />
+        </ErrorBoundary>
       </Suspense>
 
       <h2>📝 Todo App</h2>
       <Suspense fallback={<p>Loading Todo App...</p>}>
-        <TodoApp />
+        <ErrorBoundary>
+          <TodoApp />
+        </ErrorBoundary>
       </Suspense>
     </div>
   );
