@@ -3,68 +3,38 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from "webpack";
 import { fileURLToPath } from "url";
 
-const { ModuleFederationPlugin } = webpack.container;
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const foodRemote = process.env.REACT_APP_FOOD_MFE || "http://localhost:3001/remoteEntry.js";
+const todoRemote = process.env.REACT_APP_TODO_MFE || "http://localhost:3002/remoteEntry.js";
+
 export default {
   entry: "./src/index.tsx",
-
   mode: "development",
-
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "[name].js",
     publicPath: "auto",
-    clean: true,
+    clean: true
   },
-
-  devServer: {
-    port: 3000,
-    historyApiFallback: true,
-  },
-
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
-
+  resolve: { extensions: [".tsx", ".ts", ".js"] },
   module: {
     rules: [
-      {
-        test: /\.(ts|tsx)$/i,
-        exclude: /node_modules/,
-        use: "ts-loader",
-      },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"], // optional if you use CSS
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/i,
-        type: "asset/resource",
-      },
-    ],
+      { test: /\.(ts|tsx)$/, use: "ts-loader", exclude: /node_modules/ },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] }
+    ]
   },
-
   plugins: [
-    new ModuleFederationPlugin({
+    new HtmlWebpackPlugin({ template: "./public/index.html" }),
+    new webpack.container.ModuleFederationPlugin({
       name: "container",
-      filename: "remoteEntry.js",
-
       remotes: {
-        foodMFE: "foodMFE@http://localhost:3001/remoteEntry.js",
-        todoMFE: "todoMFE@http://localhost:3002/remoteEntry.js",
+        foodMFE: `foodMFE@${foodRemote}`,
+        todoMFE: `todoMFE@${todoRemote}`
       },
-
-      shared: {
-        react: { singleton: true, requiredVersion: false },
-        "react-dom": { singleton: true, requiredVersion: false },
-      },
-    }),
-
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-    }),
+      shared: { react: { singleton: true }, "react-dom": { singleton: true } }
+    })
   ],
+  devServer: { port: 3000, historyApiFallback: true }
 };

@@ -24,12 +24,12 @@ export default {
   },
   plugins: [
     new webpack.container.ModuleFederationPlugin({
-      name: "foodMFE",
+      name: "todoMFE",
       filename: "remoteEntry.js",
-      exposes: { "./FoodApp": "./src/FoodApp.tsx" },
+      exposes: { "./TodoApp": "./src/TodoApp.tsx" },
       shared: { react: { singleton: true }, "react-dom": { singleton: true } }
     }),
     new HtmlWebpackPlugin({ template: "./public/index.html" })
   ],
-  devServer: { port: 3001, historyApiFallback: true, headers: { "Access-Control-Allow-Origin": "*" } }
+  devServer: { port: 3002, historyApiFallback: true, headers: { "Access-Control-Allow-Origin": "*" } }
 };

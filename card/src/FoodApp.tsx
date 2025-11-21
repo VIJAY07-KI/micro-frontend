@@ -22,7 +22,7 @@ export default function FoodApp() {
           <h3>{food.name}</h3>
           <p>Cuisine: {food.cuisine}</p>
           <p>Rating: ⭐ {food.rating}</p>
-          <p>₹150</p>
+          <p>₹250</p>
         </div>
       ))}
     </div>

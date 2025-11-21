@@ -2,9 +2,11 @@
   "name": "container",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "start": "webpack serve --mode development"
-  },
+ "scripts": {
+  "build": "webpack --mode production",
+  "start": "webpack serve --mode development"
+}
+,
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
