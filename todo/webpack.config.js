@@ -1,7 +1,8 @@
 import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import webpack from "webpack";
 import { fileURLToPath } from "url";
+import webpack from "webpack";
+import { FederationTypeScriptRemotePlugin } from "@module-federation/typescript";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +18,9 @@ export default {
     clean: true,
   },
 
-  resolve: { extensions: [".tsx", ".ts", ".js"] },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
 
   module: {
     rules: [
@@ -27,26 +30,41 @@ export default {
   },
 
   plugins: [
+    // -----------------------------
+    // ⭐ Module Federation (Remote)
+    // -----------------------------
     new webpack.container.ModuleFederationPlugin({
-      name: "foodMFE",
+      name: "todoMFE",
       filename: "remoteEntry.js",
+
       exposes: {
-        "./FoodApp": "./src/FoodApp.tsx",
+        "./TodoApp": "./src/TodoApp.tsx",
       },
+
       shared: {
         react: { singleton: true },
         "react-dom": { singleton: true },
       },
     }),
 
-    new HtmlWebpackPlugin({ template: "./public/index.html" }),
+    // -----------------------------
+    // ⭐ TypeScript d.ts generator
+    // -----------------------------
+    new FederationTypeScriptRemotePlugin({
+      moduleFederationConfig: "./modulefederation.config.js",
+      dts: {
+        output: "./src/remoteTypes.d.ts", // ← Required (you missed this)
+      },
+    }),
+
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+    }),
   ],
 
   devServer: {
-    port: 3001,
+    port: 3002,
     historyApiFallback: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: { "Access-Control-Allow-Origin": "*" },
   },
 };

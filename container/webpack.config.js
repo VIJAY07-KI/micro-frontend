@@ -3,38 +3,58 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from "webpack";
 import { fileURLToPath } from "url";
 
+const { ModuleFederationPlugin } = webpack.container;
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const foodRemote = process.env.REACT_APP_FOOD_MFE || "http://localhost:3001/remoteEntry.js";
-const todoRemote = process.env.REACT_APP_TODO_MFE || "http://localhost:3002/remoteEntry.js";
-
 export default {
   entry: "./src/index.tsx",
+
   mode: "development",
+
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
-    publicPath: "auto",
-    clean: true
+    publicPath: "auto"
   },
-  resolve: { extensions: [".tsx", ".ts", ".js"] },
+
+  resolve: {
+    extensions: [".ts", ".tsx", ".js"]
+  },
+
   module: {
     rules: [
-      { test: /\.(ts|tsx)$/, use: "ts-loader", exclude: /node_modules/ },
-      { test: /\.css$/, use: ["style-loader", "css-loader"] }
+      {
+        test: /\.(ts|tsx)$/i,
+        exclude: /node_modules/,
+        use: "ts-loader"
+      }
     ]
   },
+
   plugins: [
-    new HtmlWebpackPlugin({ template: "./public/index.html" }),
-    new webpack.container.ModuleFederationPlugin({
+    new ModuleFederationPlugin({
       name: "container",
+
       remotes: {
-        foodMFE: `foodMFE@${foodRemote}`,
-        todoMFE: `todoMFE@${todoRemote}`
+        todoMFE: "todoMFE@https://todo-micro-frontend.vercel.app/remoteEntry.js",
+        foodMFE: "foodMFE@https://card-micro-frontend.vercel.app/remoteEntry.js"
       },
-      shared: { react: { singleton: true }, "react-dom": { singleton: true } }
+
+      shared: {
+        react: { singleton: true },
+        "react-dom": { singleton: true }
+      }
+    }),
+
+    new HtmlWebpackPlugin({
+      template: "./public/index.html"
     })
   ],
-  devServer: { port: 3000, historyApiFallback: true }
+
+  devServer: {
+    port: 3000,
+    historyApiFallback: true
+  }
 };

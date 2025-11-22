@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import ErrorBoundary from "./ErrorBoundary";
 
+// Must match remote names in webpack.config.js
 const TodoApp = lazy(() => import("todoMFE/TodoApp"));
 const FoodApp = lazy(() => import("foodMFE/FoodApp"));
 
